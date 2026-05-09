@@ -1,3 +1,5 @@
+from multiprocessing import context
+
 import google.generativeai as genai
 import os
 import json
@@ -101,9 +103,6 @@ RESPONSE FORMAT:
 # 💼 தொழில்
 (Career + wealth + success patterns)
 
-# ❤️ திருமணம் & உறவுகள்
-(Relationship psychology + spouse nature)
-
 # 💰 பணவரவு
 (Financial karma and earning patterns)
 
@@ -133,6 +132,7 @@ Birth Chart Data:
 """
 
         response = model.generate_content(prompt)
+        print("the response is",response)
 
         return response.text if response.text else "No response generated"
 
@@ -149,7 +149,7 @@ def chat_followup(history: list) -> str:
             role = msg.get("role", "")
             content = msg.get("content", "")
             context += f"{role.upper()}: {content}\n"
-
+        print("the context is",context)
         prompt = f"""
 You are an elite astrologer chatbot with deep Vedic + Western astrology knowledge.
 
@@ -196,7 +196,7 @@ Now answer the latest user question deeply and intelligently in Tamil but dont r
 """
 
         response = model.generate_content(prompt)
-
+        print("the followup response is",response)
         return response.text if response.text else "No response generated"
 
     except Exception as e:
