@@ -7,6 +7,7 @@ load_dotenv()  # ADD THIS
 API_URL = "https://json.astrologyapi.com/v1/western_horoscope"
 
 def get_chart(payload):
+    print("the payload is",payload)
     response = requests.post(
         API_URL,
         headers={
