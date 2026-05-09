@@ -47,11 +47,23 @@ def home():
 
 
 # 🔮 Generate Chart + Analysis
+# 🔮 Generate Chart + Analysis
 @app.post("/generate")
 def generate(req: BirthRequest):
+
     try:
+
+        # -----------------------------------
+        # GET LATITUDE & LONGITUDE
+        # -----------------------------------
         lat, lon = get_lat_lon(req.city)
 
+        print("LAT =", lat)
+        print("LON =", lon)
+
+        # -----------------------------------
+        # VEDIC PAYLOAD
+        # -----------------------------------
         payload = {
             "day": req.day,
             "month": req.month,
@@ -61,28 +73,58 @@ def generate(req: BirthRequest):
             "lat": lat,
             "lon": lon,
             "tzone": 5.5,
-            "house_type": "placidus",
-            "is_asteroids": "false"
+            "chartType": "south",
+            "image_type": "png"
         }
 
+        # -----------------------------------
+        # GET CHART
+        # -----------------------------------
         chart = get_chart(payload)
+
+        print("THE CHART =", chart)
+
+        # -----------------------------------
+        # AI ANALYSIS
+        # -----------------------------------
         analysis = generate_analysis(chart)
 
+        # -----------------------------------
+        # SESSION MEMORY
+        # -----------------------------------
         session_id = str(uuid.uuid4())
 
         sessions[session_id] = [
-            {"role": "system", "content": "You are an astrologer."},
-            {"role": "user", "content": f"My birth chart: {chart}"},
-            {"role": "assistant", "content": analysis}
+            {
+                "role": "system",
+                "content": "You are a real Tamil Vedic astrologer."
+            },
+            {
+                "role": "user",
+                "content": f"My Vedic astrology chart is: {chart}"
+            },
+            {
+                "role": "assistant",
+                "content": analysis
+            }
         ]
 
+        # -----------------------------------
+        # RESPONSE
+        # -----------------------------------
         return {
             "session_id": session_id,
+            "chart": chart,
             "analysis": analysis
         }
 
     except Exception as e:
-        return {"error": str(e)}
+
+        print("ERROR =", str(e))
+
+        return {
+            "error": str(e)
+        }
 
 
 # 💬 Follow-up Chat
